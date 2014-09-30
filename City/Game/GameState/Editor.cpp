@@ -40,8 +40,8 @@ namespace NordicArts {
                 }
 
                 case sf::Event::MouseMoved: {
-                    if (this->m_eActionSate == ActionState::PANNING) {
-                        sf::Vector2f vPos = sf::Vector2f(sf::Mouse::getPostion(this->m_pGame->m_oWindow) - this->m_vPanningAnchor);
+                    if (this->m_eActionState == ActionState::PANNING) {
+                        sf::Vector2f vPos = sf::Vector2f(sf::Mouse::getPosition(this->m_pGame->m_oWindow) - this->m_vPanningAnchor);
 
                         m_oGameView.move(-1.0f * vPos * this->m_fZoomLevel);
                     
@@ -51,7 +51,7 @@ namespace NordicArts {
                 }
     
                 case sf::Event::MouseButtonPressed: {
-                    if (oEvent.mouseButton.button = sf::Mouse::Middle) {
+                    if (oEvent.mouseButton.button == sf::Mouse::Middle) {
                         if (this->m_eActionState != ActionState::PANNING) {
                             this->m_eActionState = ActionState::PANNING;
                             
@@ -99,7 +99,7 @@ namespace NordicArts {
         this->m_oGUIView.setCenter(vPos);
         this->m_oGameView.setCenter(vPos);
 
-        oMap = Map("GameFiles/cityMap.dat", 64, 64, game->m_mTiles);
+        m_oMap = Map("GameFiles/cityMap.dat", 64, 64, m_pGame->m_mTiles);
 
         this->m_fZoomLevel = 1.0f;
 
@@ -107,6 +107,6 @@ namespace NordicArts {
         vCenter *= float(this->m_oMap.m_iTileSize);
         m_oGameView.setCenter(vCenter);
 
-        this->m_eActionstate = ActionState::NONE;
+        this->m_eActionState = ActionState::NONE;
     }
 };

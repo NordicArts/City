@@ -20,24 +20,25 @@ set(GameSources ${NOS}/Main/Main.cpp)
 set(GameHeaders ${NOS}/Main/Main.hpp)
 
 # Game
-link_directories(${NOS}/Game)
-include_directories(${NOS}/Game)
-list(APPEND GameSources ${NOS}/Game/Game.cpp)
-list(APPEND GameHeaders ${NOS}/Game/Game.hpp)
+set(Game ${NOS}/Game)
+link_directories(${Game})
+include_directories(${Game})
+list(APPEND GameSources ${Game}/Game.cpp)
+list(APPEND GameHeaders ${Game}/Game.hpp)
 
 # Game State
-link_directories(${NOS}/Game/GameState)
-include_directories(${NOS}/Game/GameState)
-list(APPEND GameHeaders ${NOS}/Game/GameState.hpp)
-list(APPEND GameSources ${NOS}/Game/GameState/Editor.cpp)
-list(APPEND GameHeaders ${NOS}/Game/GameState/Editor.hpp)
-list(APPEND GameSources ${NOS}/Game/GameState/Start.cpp)
-list(APPEND GameHeaders ${NOS}/Game/GameState/Start.hpp)
+link_directories(${Game}/GameState)
+include_directories(${Game}/GameState)
+list(APPEND GameHeaders ${Game}/GameState.hpp)
+list(APPEND GameSources ${Game}/GameState/Editor.cpp)
+list(APPEND GameHeaders ${Game}/GameState/Editor.hpp)
+list(APPEND GameSources ${Game}/GameState/Start.cpp)
+list(APPEND GameHeaders ${Game}/GameState/Start.hpp)
 
 # Engine (mainly for include management)
-link_directories(${NOS}/Engine)
-include_directories(${NOS}/Engine)
 set(Engine ${NOS}/Engine)
+link_directories(${Engine})
+include_directories(${Engine})
 
 # Animation
 link_directories(${Engine}/Animation)
@@ -60,6 +61,12 @@ link_directories(${Engine}/Tile)
 include_directories(${Engine}/Tile)
 list(APPEND GameSources ${Engine}/Tile/Tile.cpp)
 list(APPEND GameHeaders ${Engine}/Tile/Tile.hpp)
+
+# Map
+link_directories(${Game}/Map)
+include_directories(${Game}/Map)
+list(APPEND GameSources ${Game}/Map/Map.cpp)
+list(APPEND GameHeaders ${Game}/Map/Map.hpp)
 
 # SFML
 find_package(SFML REQUIRED system window graphics audio network)

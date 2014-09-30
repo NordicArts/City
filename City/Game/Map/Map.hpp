@@ -28,7 +28,7 @@ namespace NordicArts {
     // Methods
     public:
         Map();
-        Map(cosnt std::string &cFile, unsigned int iWidth, unsigned int iHeight, std::map<std::string, Tile> &mTiles);
+        Map(const std::string &cFile, unsigned int iWidth, unsigned int iHeight, std::map<std::string, Tile> &mTiles);
 
         void load(const std::string &cFile, unsigned int iWidth, unsigned int iHeight, std::map<std::string, Tile> &mTiles);
         void save(const std::string &cFile);

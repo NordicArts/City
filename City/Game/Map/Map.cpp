@@ -76,10 +76,10 @@ namespace NordicArts {
 
     void Map::save(const std::string &cFile) {
         std::ofstream fFile;
-        fFile.open(cFile, (std::ios:out | std::ios::binary));
+        fFile.open(cFile, (std::ios::out | std::ios::binary));
 
         for (auto oTile : this->m_vTiles) {
-            fFile.write((char *)&oTile.m_iTileType, sizeof(int));
+            fFile.write((char *)&oTile.m_eTileType, sizeof(int));
             fFile.write((char *)&oTile.m_iTileVariant, sizeof(int));
             fFile.write((char *)&oTile.m_iRegions, (sizeof(int) * 3));
             fFile.write((char *)&oTile.m_dPopulation, sizeof(double));
@@ -91,7 +91,7 @@ namespace NordicArts {
         return;
     }
 
-    void Map::draw(sf::RenderWinod &oWindow, float fDT) {
+    void Map::draw(sf::RenderWindow &oWindow, float fDT) {
         for (int y = 0; y < this->m_iHeight; ++y) {
             for (int x = 0; x < this->m_iWidth; ++x) {
                 sf::Vector2f vPos;
@@ -188,6 +188,67 @@ namespace NordicArts {
         return;
     }
 
-    void Map::depthFirstSearch(std::vector<TileType> &oList) {
-        
+    void Map::depthFirstSearch(std::vector<TileType> &oList, sf::Vector2i vPos, int iLabel, int iRegionType = 0) {
+        // Invalid positions
+        if ((vPos.x < 0) || (vPos.x >= this->m_iWidth)) {
+            return;
+        }
+
+        if ((vPos.y < 0) || (vPos.y >= this->m_iHeight)) {
+            return;
+        }
+
+        if (this->m_vTiles[((vPos.y * this->m_iWidth) + vPos.x)].m_iRegions[iRegionType] != 0) {
+            return;
+        }
+
+        // Found type
+        bool bFound = false;
+        for (auto oType : oList) {
+            if (oType == this->m_vTiles[((vPos.y * this->m_iWidth) + vPos.x)].m_eTileType) {
+                bFound = true;
+
+                break;
+            }
+        }
+        if (!bFound) { 
+            return;
+        }
+
+        this->m_vTiles[((vPos.y * this->m_iWidth) + vPos.x)].m_iRegions[iRegionType] = iLabel;
+    
+        depthFirstSearch(oList, (vPos + sf::Vector2i(-1, 0)), iLabel, iRegionType);
+        depthFirstSearch(oList, (vPos + sf::Vector2i(0, 1)), iLabel, iRegionType);
+        depthFirstSearch(oList, (vPos + sf::Vector2i(1, 0)), iLabel, iRegionType);
+        depthFirstSearch(oList, (vPos + sf::Vector2i(0, -1)), iLabel, iRegionType);
+
+        return;
+    }
+
+    void Map::findConnectedRegions(std::vector<TileType> oList, int iRegionType = 0) {
+        int iRegions = 1;
+
+        for (auto &oTile : this->m_vTiles) {
+            oTile.m_iRegions[iRegionType] = 0;
+        }
+
+        for (int y = 0; y < this->m_iHeight; ++y) {
+            for (int x = 0; x < this->m_iWidth; ++x) {
+                bool bFound = false;
+                for (auto oType : oList) {
+                    if (oType == this->m_vTiles[((y * this->m_iWidth) + x)].m_eTileType) {
+                        bFound = true;
+
+                        break;
+                    }
+                }
+
+                if ((this->m_vTiles[((y * this->m_iWidth) + x)].m_iRegions[iRegionType] == 0) && bFound) {
+                    depthFirstSearch(oList, sf::Vector2i(x, y), iRegions++, iRegionType);
+                }
+            }
+        }
+
+        this->m_iNumRegions[iRegionType] = iRegions;
+    }
 };
