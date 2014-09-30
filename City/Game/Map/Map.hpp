@@ -21,6 +21,7 @@ namespace NordicArts {
 
         std::vector<int>    m_vResources;
         std::vector<Tile>   m_vTiles;
+        std::vector<char>   m_vSelected;
 
     protected:
     private:
@@ -35,6 +36,8 @@ namespace NordicArts {
         void draw(sf::RenderWindow &oWindow, float fDT);
         void findConnectedRegions(std::vector<TileType> vWhileList, int iType);
         void updateDirection(TileType eTileType);
+        void select(sf::Vector2i vStart, sf::Vector2i vEnd, std::vector<TileType> vList);
+        void clearSelected();
 
     protected:
     private:

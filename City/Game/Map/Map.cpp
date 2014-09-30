@@ -4,15 +4,16 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 
 #include <Map/Map.hpp>
 #include <Tile/Tile.hpp>
 
 namespace NordicArts {
-    Map::Map() : m_iTileSize(8), m_iWidth(0), m_iHeight(0) {
+    Map::Map() : m_iTileSize(8), m_iWidth(0), m_iHeight(0), m_iNumSelected(0) {
         m_iNumRegions[0] = 1;
     }
-    Map::Map(const std::string &cFile, unsigned int iWidth, unsigned int iHeight, std::map<std::string, Tile> &oTiles) : m_iTileSize(8) {
+    Map::Map(const std::string &cFile, unsigned int iWidth, unsigned int iHeight, std::map<std::string, Tile> &oTiles) : m_iTileSize(8), m_iNumSelected(0) {
         load(cFile, iWidth, iHeight, oTiles);
     }
 
@@ -25,6 +26,8 @@ namespace NordicArts {
 
         for (int iPos = 0; iPos < (this->m_iWidth * this->m_iHeight); ++iPos) {
             this->m_vResources.push_back(255);
+
+            this->m_vSelected.push_back(0);
 
             TileType eTileType;
             fFile.read((char *)&eTileType, sizeof(int));
@@ -97,7 +100,15 @@ namespace NordicArts {
                 sf::Vector2f vPos;
                 vPos.x = (((x - y) * this->m_iTileSize) + (this->m_iWidth * this->m_iHeight));
                 vPos.y = (((x + y) * this->m_iTileSize) * 0.5);
-                this->m_vTiles[(y * this->m_iWidth + x)].m_oSprite.setPosition(vPos);
+                this->m_vTiles[((y * this->m_iWidth) + x)].m_oSprite.setPosition(vPos);
+
+                if (this->m_vSelected[((y * this->m_iWidth) + x)]) {
+                    this->m_vTiles[((y * this->m_iWidth) + x)].m_oSprite.setColor(sf::Color(0x7d, 0x7d, 0x7d));
+                } else {
+                    this->m_vTiles[((y * this->m_iWidth) + x)].m_oSprite.setColor(sf::Color(0xff, 0xff, 0xff));
+                }
+
+                this->m_vTiles[((y * this->m_iWidth) + x)].draw(oWindow, fDT);
             }
         }
 
@@ -251,4 +262,72 @@ namespace NordicArts {
 
         this->m_iNumRegions[iRegionType] = iRegions;
     }
-};
+
+    void Map::clearSelected() {
+        for (auto &oTile : this->m_vSelected) {
+            oTile = 0;
+        }
+
+        this->m_iNumSelected = 0;
+        
+        return;
+    }
+
+    void Map::select(sf::Vector2i vStart, sf::Vector2i vEnd, std::vector<TileType> vList) {
+        if (vEnd.y < vStart.y) {
+            std::swap(vStart.y, vEnd.y);
+        }
+        if (vEnd.x < vStart.x) {
+            std::swap(vStart.x, vEnd.x);
+        }
+
+        // End X
+        if (vEnd.x >= this->m_iWidth) {
+            vEnd.x = (this->m_iWidth - 1);
+        } else if (vEnd.x < 0) {
+            vEnd.x = 0;
+        }
+
+        // End Y
+        if (vEnd.y >= this->m_iHeight) {
+            vEnd.y = (this->m_iHeight - 1);
+        } else if (vEnd.y < 0) {
+            vEnd.y = 0;
+        }
+
+        // Start X
+        if (vStart.x >= this->m_iWidth) {
+            vStart.x = (this->m_iWidth - 1);
+        } else if (vStart.x < 0) {
+            vStart.x = 0;
+        }
+
+        // Start Y
+        if (vStart.y >= this->m_iHeight) {
+            vStart.y = (this->m_iHeight - 1);
+        } else if (vStart.y < 0) {
+            vStart.y = 0;
+        }
+
+        for (int y = vStart.y; y < vEnd.y; ++y) {
+            for (int x = vStart.x; x < vEnd.x; ++x) {
+                this->m_vSelected[((y * this->m_iWidth) + x)] = 1;
+            
+                ++this->m_iNumSelected;
+
+                for (auto eType : vList) {
+                    if (m_vTiles[((y * this->m_iWidth) + x)].m_eTileType == eType) {
+                        this->m_vSelected[((y * this->m_iWidth) + x)] = 2;
+
+                        --this->m_iNumSelected;
+                
+                        break;
+                    }
+                }
+            }
+        }
+
+        return;
+    }
+};                
+        

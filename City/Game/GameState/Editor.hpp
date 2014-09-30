@@ -5,11 +5,13 @@
 
 #include <GameState.hpp>
 #include <Map/Map.hpp>
+#include <Tile/Tile.hpp>
 
 namespace NordicArts {
     enum class ActionState {
         NONE,
-        PANNING
+        PANNING,
+        SELECTING
     };
 
     class GameStateEditor : public GameState {
@@ -18,6 +20,8 @@ namespace NordicArts {
     protected:
     private:
         sf::Vector2i    m_vPanningAnchor;
+        sf::Vector2i    m_vSelectionStart;
+        sf::Vector2i    m_vSelectionEnd;
 
         sf::View        m_oGameView;
         sf::View        m_oGUIView;
@@ -27,6 +31,8 @@ namespace NordicArts {
         Map             m_oMap;
 
         float           m_fZoomLevel;
+
+        Tile            *m_pCurrentTile;
 
     // Methods
     public:
