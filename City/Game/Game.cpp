@@ -6,6 +6,8 @@
 #include <Game.hpp>
 #include <GameState.hpp>
 #include <Texture/Manager.hpp>
+#include <Animation/Handler.hpp>
+#include <Tile/Tile.hpp>
 
 namespace NordicArts {
     void Game::loadTiles() {
@@ -32,6 +34,22 @@ namespace NordicArts {
         m_oTextureManager.loadTexture("industrial", "GameFiles/media/industrial.png");
         m_oTextureManager.loadTexture("road", "GameFiles/media/road.png");
         m_oTextureManager.loadTexture("background", "GameFiles/media/background.png");
+    }
+
+    void Game::loadFonts() {
+        sf::Font oFont;
+        oFont.loadFromFile("GameFiles/media/font.ttf");
+
+        this->m_mFonts["main_font"] = oFont;
+    
+        return;
+    }
+
+    void Game::loadStyleSheets() {
+        this->m_mStyleSheets["button"]  = GUIStyle(&this->m_mFonts.at("main_font"), 1, sf::Color(0xc6, 0xc6, 0xc6), sf::Color(0x94, 0x94, 0x94), sf::Color(0x00, 0x00, 0x00), sf::Color(0x61, 0x61, 0x61), sf::Color(0x94, 0x94, 0x94), sf::Color(0x00, 0x00, 0x00));
+        this->m_mStyleSheets["text"]    = GUIStyle(&this->m_mFonts.at("main_font"), 0, sf::Color(0x00, 0x00, 0x00, 0x00), sf::Color(0x00, 0x00, 0x00), sf::Color(0xff, 0xff, 0xff), sf::Color(0x00, 0x00, 0x00, 0x00), sf::Color(0x00, 0x00, 0x00), sf::Color(0xff, 0x00, 0x00));
+
+        return;
     }
 
     void Game::pushState(GameState *pState) {
@@ -92,6 +110,8 @@ namespace NordicArts {
     Game::Game() {
         this->loadTextures();
         this->loadTiles();
+        this->loadFonts();
+        this->loadStyleSheets();
 
         this->m_oWindow.create(sf::VideoMode(800, 600), "City");
         this->m_oWindow.setFramerateLimit(60);

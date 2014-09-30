@@ -10,6 +10,7 @@
 
 #include <Texture/Manager.hpp>
 #include <Tile/Tile.hpp>
+#include <GUI.hpp>
 
 // Errors
 #ifndef printStuff
@@ -24,16 +25,18 @@ namespace NordicArts {
     class Game {
     // Variables
     public:
-        std::stack<GameState *>     m_sStates;
+        std::stack<GameState *>         m_sStates;
 
-        sf::RenderWindow            m_oWindow;
-        sf::Sprite                  m_oBackground;
+        sf::RenderWindow                m_oWindow;
+        sf::Sprite                      m_oBackground;
 
-        TextureManager              m_oTextureManager;
+        TextureManager                  m_oTextureManager;
 
-        std::map<std::string, Tile> m_mTiles;
+        std::map<std::string, Tile>     m_mTiles;
+        std::map<std::string, GUIStyle> m_mStyleSheets;
+        std::map<std::string, sf::Font> m_mFonts;
 
-        const static int            m_iTileSize = 8;
+        const static int                m_iTileSize = 8;
 
     protected:
     private:
@@ -54,6 +57,8 @@ namespace NordicArts {
     private:
         void loadTextures();
         void loadTiles();
+        void loadFonts();
+        void loadStyleSheets();
     
     };
 };

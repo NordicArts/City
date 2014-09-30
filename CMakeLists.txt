@@ -62,6 +62,17 @@ include_directories(${Engine}/Tile)
 list(APPEND GameSources ${Engine}/Tile/Tile.cpp)
 list(APPEND GameHeaders ${Engine}/Tile/Tile.hpp)
 
+# GUI
+link_directories(${Engine}/GUI)
+include_directories(${Engine}/GUI)
+list(APPEND GameSources ${Engine}/GUI/Style.cpp)
+list(APPEND GameHeaders ${Engine}/GUI/Style.hpp)
+list(APPEND GameSources ${Engine}/GUI/Entry.cpp)
+list(APPEND GameHeaders ${Engine}/GUI/Entry.hpp)
+list(APPEND GameSources ${Engine}/GUI/GUI.cpp)
+list(APPEND GameHeaders ${Engine}/GUI/GUI.hpp)
+list(APPEND GameHeaders ${Engine}/GUI.hpp)
+
 # Map
 link_directories(${Game}/Map)
 include_directories(${Game}/Map)

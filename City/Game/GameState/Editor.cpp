@@ -6,7 +6,12 @@
 namespace NordicArts {
     void GameStateEditor::draw(const float fDT) {
         this->m_pGame->m_oWindow.clear(sf::Color::Black);
+
+        this->m_pGame->m_oWindow.setView(this->m_oGUIView);
         this->m_pGame->m_oWindow.draw(this->m_pGame->m_oBackground);
+
+        this->m_pGame->m_oWindow.setView(this->m_oGameView);
+        this->m_oMap.draw(this->m_pGame->m_oWindow, fDT);
 
         return;
     }

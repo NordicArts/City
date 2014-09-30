@@ -4,6 +4,10 @@
 #include <SFML/Graphics.hpp>
 
 #include <GameState.hpp>
+#include <GUI.hpp>
+
+#include <map>
+#include <string>
 
 namespace NordicArts {
     class GameStateStart : public GameState {
@@ -11,7 +15,9 @@ namespace NordicArts {
     public:
     protected:
     private:
-        sf::View m_oView;
+        sf::View                    m_oView;
+
+        std::map<std::string, GUI>  m_mGUISystem;
 
     // Methods
     public:
