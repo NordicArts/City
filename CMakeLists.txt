@@ -79,6 +79,12 @@ include_directories(${Game}/Map)
 list(APPEND GameSources ${Game}/Map/Map.cpp)
 list(APPEND GameHeaders ${Game}/Map/Map.hpp)
 
+# City
+link_directories(${Game}/City)
+include_directories(${Game}/City)
+list(APPEND GameSources ${Game}/City/City.cpp)
+list(APPEND GameHeaders ${Game}/City/City.hpp)
+
 # SFML
 find_package(SFML REQUIRED system window graphics audio network)
 include_directories(${SFML_INCLUDE_DIR})
