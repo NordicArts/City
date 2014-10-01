@@ -7,7 +7,7 @@ namespace NordicArts {
     }
 
     City::City(std::string cCityName, int iTileSize, std::map<std::string, Tile> &mTiles) : City() {
-        this->m_oMap.m_iTileSize = iTileSize;
+        this->m_oMap.setTileSize(iTileSize);
         
         load(cCityName, mTiles);
     }
@@ -51,13 +51,13 @@ namespace NordicArts {
     }
 
     void City::bulldoze(const Tile &oTile) {
-        for (int iPos = 0; iPos < (this->m_oMap.m_iWidth * this->m_oMap.m_iHeight); ++iPos) {
+        for (int iPos = 0; iPos < (this->m_oMap.getWidth() * this->m_oMap.getHeight()); ++iPos) {
             if (this->m_oMap.m_vSelected[iPos] == 1) {
-                if (this->m_oMap.m_vTiles[iPos].m_eTileType == TileType::RESIDENTIAL) {
+                if (this->m_oMap.m_vTiles[iPos].getTileType() == TileType::RESIDENTIAL) {
                     this->m_dPopulationPool += this->m_oMap.m_vTiles[iPos].m_dPopulation;
-                } else if (this->m_oMap.m_vTiles[iPos].m_eTileType == TileType::COMMERCIAL) {
+                } else if (this->m_oMap.m_vTiles[iPos].getTileType() == TileType::COMMERCIAL) {
                     this->m_dEmploymentPool += this->m_oMap.m_vTiles[iPos].m_dPopulation;
-                } else if (this->m_oMap.m_vTiles[iPos].m_eTileType == TileType::INDUSTRIAL) {
+                } else if (this->m_oMap.m_vTiles[iPos].getTileType() == TileType::INDUSTRIAL) {
                     this->m_dEmploymentPool += this->m_oMap.m_vTiles[iPos].m_dPopulation;
                 }
 
@@ -157,8 +157,8 @@ namespace NordicArts {
 
         std::ofstream fFile(cFile.c_str(), std::ios::out);
 
-        fFile << "width=" << this->m_oMap.m_iWidth << std::endl;
-        fFile << "height=" << this->m_oMap.m_iHeight << std::endl;
+        fFile << "width=" << this->m_oMap.getWidth() << std::endl;
+        fFile << "height=" << this->m_oMap.getHeight() << std::endl;
         fFile << "day=" << this->m_iDay << std::endl;
         fFile << "populationPool=" << this->m_dPopulationPool << std::endl;
         fFile << "employmentPool=" << this->m_dEmploymentPool << std::endl;
@@ -199,15 +199,15 @@ namespace NordicArts {
 
         for (int i = 0; i < this->m_oMap.m_vTiles.size(); ++i) {
             Tile &oTile = this->m_oMap.m_vTiles[this->m_iShuffledTiles[i]];
-            if (oTile.m_eTileType == TileType::RESIDENTIAL) {
+            if (oTile.getTileType() == TileType::RESIDENTIAL) {
                 this->distributePool(this->m_dPopulationPool, oTile, (this->m_dBirthRate - m_dDeathRate));
 
                 dPopTotal += oTile.m_dPopulation;
-            } else if (oTile.m_eTileType == TileType::COMMERCIAL) {
+            } else if (oTile.getTileType() == TileType::COMMERCIAL) {
                 if ((rand() % 100) <  (15 * (1.0 - this->m_dCommercialTax))) {
                     this->distributePool(this->m_dEmploymentPool, oTile, 0.00);
                 }
-            } else if (oTile.m_eTileType == TileType::INDUSTRIAL) {
+            } else if (oTile.getTileType() == TileType::INDUSTRIAL) {
                 if ((this->m_oMap.m_vResources[i] > 0) && ((rand() % 100) < this->m_dPopulation)) {
                     ++oTile.m_fProduction;
 
@@ -224,10 +224,10 @@ namespace NordicArts {
 
         for (int i = 0; i < this->m_oMap.m_vTiles.size(); ++i) {
             Tile &oTile = this->m_oMap.m_vTiles[this->m_iShuffledTiles[i]];
-            if (oTile.m_eTileType == TileType::INDUSTRIAL) {
+            if (oTile.getTileType() == TileType::INDUSTRIAL) {
                 int iReceivedResources = 0;
                 for (auto &oTiles : this->m_oMap.m_vTiles) {
-                    if ((oTiles.m_iRegions[0] == oTile.m_iRegions[0]) && (oTiles.m_eTileType == TileType::INDUSTRIAL)) {
+                    if ((oTiles.m_iRegions[0] == oTile.m_iRegions[0]) && (oTiles.getTileType() == TileType::INDUSTRIAL)) {
                         if (oTiles.m_fProduction > 0) {
                             ++iReceivedResources;
                 
@@ -246,12 +246,12 @@ namespace NordicArts {
 
         for (int i = 0; i < this->m_oMap.m_vTiles.size(); ++i) {
             Tile &oTile = this->m_oMap.m_vTiles[this->m_iShuffledTiles[i]];
-            if (oTile.m_eTileType == TileType::COMMERCIAL) {
+            if (oTile.getTileType() == TileType::COMMERCIAL) {
                 int iRecievedGoods = 0;
                 double dMaxCustomers = 0.0;
                 
                 for (auto &oTiles : this->m_oMap.m_vTiles) {
-                    if ((oTiles.m_iRegions[0] == oTile.m_iRegions[0]) && (oTiles.m_eTileType == TileType::INDUSTRIAL) && (oTiles.m_fStoredGoods > 0)) {
+                    if ((oTiles.m_iRegions[0] == oTile.m_iRegions[0]) && (oTiles.getTileType() == TileType::INDUSTRIAL) && (oTiles.m_fStoredGoods > 0)) {
                         while ((oTiles.m_fStoredGoods > 0) && (iRecievedGoods != (oTile.m_iTileVariant + 1))) {
                             --oTiles.m_fStoredGoods;
                         
@@ -259,7 +259,7 @@ namespace NordicArts {
         
                             dIndustrialRevenue += (100 * (1.0 - m_dIndustrialTax));
                         }
-                    } else if ((oTiles.m_iRegions[0] == oTile.m_iRegions[0]) && (oTiles.m_eTileType == TileType::RESIDENTIAL)) {
+                    } else if ((oTiles.m_iRegions[0] == oTile.m_iRegions[0]) && (oTiles.getTileType() == TileType::RESIDENTIAL)) {
                         dMaxCustomers += oTiles.m_dPopulation;
                     }
 

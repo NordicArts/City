@@ -25,6 +25,10 @@ namespace NordicArts {
         GUIEntry(const std::string &cMessage, sf::RectangleShape oShape, sf::Text oText);
         GUIEntry();
 
+        sf::RectangleShape getShape() const;
+
+        sf::Text getText() const;
+
     protected:
     private:
 

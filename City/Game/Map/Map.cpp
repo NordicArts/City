@@ -82,7 +82,7 @@ namespace NordicArts {
         fFile.open(cFile, (std::ios::out | std::ios::binary));
 
         for (auto oTile : this->m_vTiles) {
-            fFile.write((char *)&oTile.m_eTileType, sizeof(int));
+            fFile.write((char *)oTile.getTileType(), sizeof(int));
             fFile.write((char *)&oTile.m_iTileVariant, sizeof(int));
             fFile.write((char *)&oTile.m_iRegions, (sizeof(int) * 3));
             fFile.write((char *)&oTile.m_dPopulation, sizeof(double));
@@ -100,12 +100,12 @@ namespace NordicArts {
                 sf::Vector2f vPos;
                 vPos.x = (((x - y) * this->m_iTileSize) + (this->m_iWidth * this->m_iHeight));
                 vPos.y = (((x + y) * this->m_iTileSize) * 0.5);
-                this->m_vTiles[((y * this->m_iWidth) + x)].m_oSprite.setPosition(vPos);
+                this->m_vTiles[((y * this->m_iWidth) + x)].getSprite().setPosition(vPos);
 
                 if (this->m_vSelected[((y * this->m_iWidth) + x)]) {
-                    this->m_vTiles[((y * this->m_iWidth) + x)].m_oSprite.setColor(sf::Color(0x7d, 0x7d, 0x7d));
+                    this->m_vTiles[((y * this->m_iWidth) + x)].getSprite().setColor(sf::Color(0x7d, 0x7d, 0x7d));
                 } else {
-                    this->m_vTiles[((y * this->m_iWidth) + x)].m_oSprite.setColor(sf::Color(0xff, 0xff, 0xff));
+                    this->m_vTiles[((y * this->m_iWidth) + x)].getSprite().setColor(sf::Color(0xff, 0xff, 0xff));
                 }
 
                 this->m_vTiles[((y * this->m_iWidth) + x)].draw(oWindow, fDT);
@@ -120,7 +120,7 @@ namespace NordicArts {
             for (int x = 0; x < this->m_iWidth; ++x) {
                 int iPos = (y * this->m_iWidth + x);
         
-                if (this->m_vTiles[iPos].m_eTileType != eTileType) {
+                if (this->m_vTiles[iPos].getTileType() != eTileType) {
                     continue;
                 }
 
@@ -131,35 +131,35 @@ namespace NordicArts {
                 };
 
                 if ((x > 0) && (y > 0)) {
-                    bAdjacentTiles[0][0] = ((this->m_vTiles[(y - 1) * this->m_iWidth + (x - 1)].m_eTileType) == eTileType);
+                    bAdjacentTiles[0][0] = ((this->m_vTiles[(y - 1) * this->m_iWidth + (x - 1)].getTileType()) == eTileType);
                 }
 
                 if (y > 0) {
-                    bAdjacentTiles[0][1] = ((this->m_vTiles[(y -1) * this->m_iWidth + x].m_eTileType) == eTileType);
+                    bAdjacentTiles[0][1] = ((this->m_vTiles[(y -1) * this->m_iWidth + x].getTileType()) == eTileType);
                 }
 
                 if ((x < (this->m_iWidth - 1)) && (y > 0)) {
-                    bAdjacentTiles[0][2] = ((this->m_vTiles[(y -1) * this->m_iWidth + (x + 1)].m_eTileType) == eTileType);
+                    bAdjacentTiles[0][2] = ((this->m_vTiles[(y -1) * this->m_iWidth + (x + 1)].getTileType()) == eTileType);
                 }
 
                 if (x > 0) {
-                    bAdjacentTiles[1][0] = ((this->m_vTiles[y * this->m_iWidth + (x - 1)].m_eTileType) == eTileType);
+                    bAdjacentTiles[1][0] = ((this->m_vTiles[y * this->m_iWidth + (x - 1)].getTileType()) == eTileType);
                 }
 
                 if (x < (m_iWidth - 1)) {
-                    bAdjacentTiles[1][2] = ((this->m_vTiles[y * this->m_iWidth + (x + 1)].m_eTileType) == eTileType);
+                    bAdjacentTiles[1][2] = ((this->m_vTiles[y * this->m_iWidth + (x + 1)].getTileType()) == eTileType);
                 }
 
                 if ((x > 0) && (y < (this->m_iHeight - 1))) {
-                    bAdjacentTiles[2][0] = ((this->m_vTiles[(y + 1) * this->m_iWidth + (x - 1)].m_eTileType) == eTileType);
+                    bAdjacentTiles[2][0] = ((this->m_vTiles[(y + 1) * this->m_iWidth + (x - 1)].getTileType()) == eTileType);
                 }
 
                 if (y < (this->m_iHeight - 1)) {
-                    bAdjacentTiles[2][1] = ((this->m_vTiles[(y + 1) * this->m_iWidth + x].m_eTileType) == eTileType);
+                    bAdjacentTiles[2][1] = ((this->m_vTiles[(y + 1) * this->m_iWidth + x].getTileType()) == eTileType);
                 }
 
                 if ((x < (this->m_iWidth - 1)) && (y < (this->m_iHeight - 1))) {
-                    bAdjacentTiles[2][2] = ((this->m_vTiles[(y + 1) * this->m_iWidth + (x + 1)].m_eTileType) == eTileType);
+                    bAdjacentTiles[2][2] = ((this->m_vTiles[(y + 1) * this->m_iWidth + (x + 1)].getTileType()) == eTileType);
                 }
 
                 if (bAdjacentTiles[1][0] && bAdjacentTiles[1][2] && bAdjacentTiles[0][1] && bAdjacentTiles[2][1]) {
@@ -216,7 +216,7 @@ namespace NordicArts {
         // Found type
         bool bFound = false;
         for (auto oType : oList) {
-            if (oType == this->m_vTiles[((vPos.y * this->m_iWidth) + vPos.x)].m_eTileType) {
+            if (oType == this->m_vTiles[((vPos.y * this->m_iWidth) + vPos.x)].getTileType()) {
                 bFound = true;
 
                 break;
@@ -247,7 +247,7 @@ namespace NordicArts {
             for (int x = 0; x < this->m_iWidth; ++x) {
                 bool bFound = false;
                 for (auto oType : oList) {
-                    if (oType == this->m_vTiles[((y * this->m_iWidth) + x)].m_eTileType) {
+                    if (oType == this->m_vTiles[((y * this->m_iWidth) + x)].getTileType()) {
                         bFound = true;
 
                         break;
@@ -316,7 +316,7 @@ namespace NordicArts {
                 ++this->m_iNumSelected;
 
                 for (auto eType : vList) {
-                    if (m_vTiles[((y * this->m_iWidth) + x)].m_eTileType == eType) {
+                    if (m_vTiles[((y * this->m_iWidth) + x)].getTileType() == eType) {
                         this->m_vSelected[((y * this->m_iWidth) + x)] = 2;
 
                         --this->m_iNumSelected;
@@ -328,6 +328,24 @@ namespace NordicArts {
         }
 
         return;
+    }
+
+    unsigned int Map::getTileSize() const {
+        return this->m_iTileSize;
+    }
+    void Map::setTileSize(unsigned int iSize) {
+        this->m_iTileSize = iSize;
+    }
+
+    unsigned int Map::getNumSelected() const {
+        return this->m_iNumSelected;
+    }
+
+    unsigned int Map::getWidth() const {
+        return this->m_iWidth;
+    }
+    unsigned int Map::getHeight() const {
+        return this->m_iHeight;
     }
 };                
         

@@ -24,11 +24,7 @@ namespace NordicArts {
     class Tile {
     // Variables
     public:
-        AnimationHandler    m_oAnimationHandler;
-
-        sf::Sprite          m_oSprite;
-        
-        TileType            m_eTileType;
+//        AnimationHandler    m_oAnimationHandler;
 
         int                 m_iTileVariant;
 
@@ -44,6 +40,11 @@ namespace NordicArts {
 
     protected:
     private:
+        TileType            m_eTileType;
+
+        sf::Sprite          m_oSprite;
+
+        AnimationHandler    m_oAnimationHandler;
 
     // Methods
     public:
@@ -54,6 +55,15 @@ namespace NordicArts {
         void update();
 
         std::string getCost() const;
+
+        TileType getTileType() const;
+        void setTileType(TileType eType);
+
+        sf::Sprite getSprite() const;
+        void setSprite(sf::Sprite oSprite);
+
+        AnimationHandler getAnimationHandler() const;
+        void setAnimationHandler(AnimationHandler oHandler);
 
     protected:
     private:

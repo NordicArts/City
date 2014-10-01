@@ -52,6 +52,27 @@ namespace NordicArts {
     std::string Tile::getCost() const {
         return std::to_string(this->m_iCost);
     }
+
+    TileType Tile::getTileType() const {
+        return this->m_eTileType;
+    }
+    void Tile::setTileType(TileType eType) {
+        this->m_eTileType = eType;
+    }
+
+    sf::Sprite Tile::getSprite() const {
+        return this->m_oSprite;
+    }
+    void Tile::setSprite(sf::Sprite oSprite) {
+        this->m_oSprite = oSprite;
+    }
+
+    AnimationHandler Tile::getAnimationHandler() const {
+        return this->m_oAnimationHandler;
+    }
+    void Tile::setAnimationHandler(AnimationHandler oHandler) {
+        this->m_oAnimationHandler = oHandler;
+    }
     
     std::string tileTypeToString(TileType eType) {
         switch (eType) {

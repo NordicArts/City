@@ -10,7 +10,7 @@ namespace NordicArts {
             return;
         }
 
-        float fDuration = this->m_vAnimations[m_iCurrentAnimation].m_fDuration;
+        float fDuration = this->m_vAnimations[m_iCurrentAnimation].getDuration();
 
         if (int((m_fT + fDT) / fDuration) > int(m_fT / fDuration)) {
             int iFrame = int((m_fT + fDT) / fDuration);

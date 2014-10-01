@@ -10,4 +10,57 @@ namespace NordicArts {
 
     GUIStyle::GUIStyle() {
     }
+
+    sf::Font *GUIStyle::getFont() const {
+        return m_pFont;
+    }
+
+    sf::Color GUIStyle::getBodyColor() const {
+        return m_oBodyColor;
+    }
+    void GUIStyle::setBodyColor(sf::Color oColor) {
+        m_oBodyColor = oColor;
+    }
+
+    sf::Color GUIStyle::getBodyHighlightColor() const {
+        return m_oBodyHighlightColor;
+    }
+    void GUIStyle::setBodyHighlightColor(sf::Color oColor) {
+        m_oBodyHighlightColor = oColor;
+    }
+    
+    sf::Color GUIStyle::getBorderColor() const {
+        return m_oBorderColor;
+    }
+    void GUIStyle::setBorderColor(sf::Color oColor) {
+        m_oBorderColor = oColor;
+    }
+
+    sf::Color GUIStyle::getBorderHighlightColor() const {
+        return m_oBorderHighlightColor;
+    }
+    void GUIStyle::setBorderHighlightColor(sf::Color oColor) {
+        m_oBorderHighlightColor = oColor;
+    }
+
+    sf::Color GUIStyle::getTextColor() const {
+        return m_oTextColor;
+    }
+    void GUIStyle::setTextColor(sf::Color oColor) {
+        m_oTextColor = oColor;
+    }
+
+    sf::Color GUIStyle::getTextHighlightColor() const {
+        return m_oTextHighlightColor;
+    }
+    void GUIStyle::setTextHighlightColor(sf::Color oColor) {
+        m_oTextHighlightColor = oColor;
+    }
+
+    float GUIStyle::getBorderSize() const {
+        return m_fBorderSize;
+    }
+    void GUIStyle::setBorderSize(float fSize) {
+        m_fBorderSize = fSize;
+    }
 };

@@ -10,16 +10,16 @@ namespace NordicArts {
     GUI::GUI(sf::Vector2f vDimensions, int iPadding, bool bHorizontal, GUIStyle &oStyle, std::vector<std::pair<std::string, std::string>> vEntries) : m_bVisible(false), m_bHorizontal(bHorizontal), m_oStyle(oStyle), m_vDimensions(vDimensions), m_iPadding(iPadding) {
         sf::RectangleShape oShape;
         oShape.setSize(vDimensions);
-        oShape.setFillColor(oStyle.m_oBodyColor);
-        oShape.setOutlineThickness(oStyle.m_fBorderSize);
-        oShape.setOutlineColor(oStyle.m_oBorderColor);
+        oShape.setFillColor(oStyle.getBodyColor());
+        oShape.setOutlineThickness(oStyle.getBorderSize());
+        oShape.setOutlineColor(oStyle.getBorderColor());
 
         for (auto oEntry : vEntries) {
             sf::Text oText;
             oText.setString(oEntry.first);
-            oText.setFont(*oStyle.m_pFont);
-            oText.setColor(oStyle.m_oTextColor);
-            oText.setCharacterSize(vDimensions.y - oStyle.m_fBorderSize - iPadding);
+            oText.setFont(*oStyle.getFont());
+            oText.setColor(oStyle.getTextColor());
+            oText.setCharacterSize(vDimensions.y - oStyle.getBorderSize() - iPadding);
 
             this->m_vEntries.push_back(GUIEntry(oEntry.second, oShape, oText));
         }
@@ -40,13 +40,13 @@ namespace NordicArts {
 
         for (int i = 0; i < this->m_vEntries.size(); ++i) {
             sf::Vector2f vPoint = vMousePos;
-            vPoint += this->m_vEntries[i].m_oShape.getOrigin();
-            vPoint -= this->m_vEntries[i].m_oShape.getPosition();
+            vPoint += this->m_vEntries[i].getShape().getOrigin();
+            vPoint -= this->m_vEntries[i].getShape().getPosition();
 
-            if ((vPoint.x < 0) || (vPoint.x > (this->m_vEntries[i].m_oShape.getScale().x * this->m_vDimensions.x))) {
+            if ((vPoint.x < 0) || (vPoint.x > (this->m_vEntries[i].getShape().getScale().x * this->m_vDimensions.x))) {
                 continue;
             }
-            if ((vPoint.y < 0) || (vPoint.y > (this->m_vEntries[i].m_oShape.getScale().y * this->m_vDimensions.y))) {
+            if ((vPoint.y < 0) || (vPoint.y > (this->m_vEntries[i].getShape().getScale().y * this->m_vDimensions.y))) {
                 continue;
             }
         }
@@ -60,7 +60,7 @@ namespace NordicArts {
             return;
         }
 
-        m_vEntries[iEntry].m_oText.setString(cText);
+        m_vEntries[iEntry].getText().setString(cText);
         
         return;
     }
@@ -69,8 +69,8 @@ namespace NordicArts {
         this->m_vDimensions = vDimensions;
 
         for (auto &oEntry : m_vEntries) {
-            oEntry.m_oShape.setSize(vDimensions);
-            oEntry.m_oText.setCharacterSize(m_vDimensions.y - m_oStyle.m_fBorderSize - m_iPadding);
+            oEntry.getShape().setSize(vDimensions);
+            oEntry.getText().setCharacterSize(m_vDimensions.y - m_oStyle.getBorderSize() - m_iPadding);
         }
 
         return;
@@ -82,8 +82,8 @@ namespace NordicArts {
         }
 
         for (auto oEntry : this->m_vEntries) {
-            oTarget.draw(oEntry.m_oShape);
-            oTarget.draw(oEntry.m_oText);
+            oTarget.draw(oEntry.getShape());
+            oTarget.draw(oEntry.getText());
         }
 
         return;
@@ -97,11 +97,11 @@ namespace NordicArts {
         for (auto &oEntry : this->m_vEntries) {
             sf::Vector2f vOrigin = this->getOrigin();
             vOrigin -= vOffset;
-            oEntry.m_oShape.setOrigin(vOrigin);
-            oEntry.m_oText.setOrigin(vOrigin);
+            oEntry.getShape().setOrigin(vOrigin);
+            oEntry.getText().setOrigin(vOrigin);
 
-            oEntry.m_oShape.setPosition(this->getPosition());
-            oEntry.m_oText.setPosition(this->getPosition());
+            oEntry.getShape().setPosition(this->getPosition());
+            oEntry.getText().setPosition(this->getPosition());
 
             if (this->m_bHorizontal) {
                 vOffset.x += this->m_vDimensions.x;
@@ -122,13 +122,13 @@ namespace NordicArts {
     void GUI::highlight(const int iEntry) {
         for (int i = 0; i < m_vEntries.size(); ++i) {
             if (i == iEntry) {
-                m_vEntries[i].m_oShape.setFillColor(m_oStyle.m_oBodyHighlightColor);
-                m_vEntries[i].m_oShape.setOutlineColor(m_oStyle.m_oBorderHighlightColor);
-                m_vEntries[i].m_oText.setColor(m_oStyle.m_oTextHighlightColor);
+                m_vEntries[i].getShape().setFillColor(m_oStyle.getBodyHighlightColor());
+                m_vEntries[i].getShape().setOutlineColor(m_oStyle.getBorderHighlightColor());
+                m_vEntries[i].getText().setColor(m_oStyle.getTextHighlightColor());
             } else {
-                m_vEntries[i].m_oShape.setFillColor(m_oStyle.m_oBodyColor);
-                m_vEntries[i].m_oShape.setOutlineColor(m_oStyle.m_oBorderColor);
-                m_vEntries[i].m_oText.setColor(m_oStyle.m_oTextColor);
+                m_vEntries[i].getShape().setFillColor(m_oStyle.getBodyColor());
+                m_vEntries[i].getShape().setOutlineColor(m_oStyle.getBorderColor());
+                m_vEntries[i].getText().setColor(m_oStyle.getTextColor());
             }
         }
 

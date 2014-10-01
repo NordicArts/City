@@ -10,4 +10,12 @@ namespace NordicArts {
 
     GUIEntry::GUIEntry() {
     }
+
+    sf::RectangleShape GUIEntry::getShape() const {
+        return m_oShape;
+    }
+
+    sf::Text GUIEntry::getText() const {
+        return m_oText;
+    }
 };

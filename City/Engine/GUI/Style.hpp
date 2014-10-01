@@ -11,6 +11,8 @@ namespace NordicArts {
     class GUIStyle {
     // Variables
     public:
+    protected:
+    private:
         sf::Color   m_oBodyColor;
         sf::Color   m_oBodyHighlightColor;
         sf::Color   m_oBorderColor;
@@ -22,13 +24,33 @@ namespace NordicArts {
 
         float       m_fBorderSize;
 
-    protected:
-    private:
-
     // Methods
     public:
         GUIStyle(sf::Font *pFont, float fBorderSize, sf::Color oBodyColor, sf::Color oBorderColor, sf::Color oTextColor, sf::Color oBodyHighlightColor, sf::Color oBorderHighlightColor, sf::Color oTextHighlightColor);
         GUIStyle();
+
+        sf::Font *getFont() const;
+        
+        sf::Color getBodyColor() const;
+        void setBodyColor(sf::Color oColor);
+
+        sf::Color getBodyHighlightColor() const;
+        void setBodyHighlightColor(sf::Color oColor);
+
+        sf::Color getBorderColor() const;
+        void setBorderColor(sf::Color oColor);
+
+        sf::Color getBorderHighlightColor() const;
+        void setBorderHighlightColor(sf::Color oColor);
+
+        sf::Color getTextColor() const;
+        void setTextColor(sf::Color oColor);
+
+        sf::Color getTextHighlightColor() const;
+        void setTextHighlightColor(sf::Color oColor);
+
+        float getBorderSize() const;
+        void setBorderSize(float fSize);
 
     protected:
     private:

@@ -29,7 +29,7 @@ namespace NordicArts {
         this->m_mGUISystem.at("infoBar").setEntryText(1, ("$" + std::to_string(this->m_oCity.m_dFunds)));
         this->m_mGUISystem.at("infoBar").setEntryText(2, (std::to_string(this->m_oCity.m_dPopulation) + "(" + std::to_string(this->m_oCity.getHomeless()) + ")"));
         this->m_mGUISystem.at("infoBar").setEntryText(3, (std::to_string(this->m_oCity.m_dEmployable) + "(" + std::to_string(this->m_oCity.getUnemployed()) + ")"));
-        this->m_mGUISystem.at("infoBar").setEntryText(4, tileTypeToString(m_pCurrentTile->m_eTileType));
+        this->m_mGUISystem.at("infoBar").setEntryText(4, tileTypeToString(m_pCurrentTile->getTileType()));
 
         return;
     }
@@ -76,19 +76,19 @@ namespace NordicArts {
                         m_vPanningAnchor = sf::Mouse::getPosition(this->m_pGame->m_oWindow);
                     } else if (this->m_eActionState == ActionState::SELECTING) {
                         sf::Vector2f vPos = this->m_pGame->m_oWindow.mapPixelToCoords(sf::Mouse::getPosition(this->m_pGame->m_oWindow), this->m_oGameView);
-                        m_vSelectionEnd.x = ((vPos.x / this->m_oMap.m_iTileSize) + (vPos.x / (2 * this->m_oMap.m_iTileSize)) - (this->m_oMap.m_iWidth * 0.5) - 0.5);
-                        m_vSelectionEnd.y = ((vPos.y / this->m_oMap.m_iTileSize) - (vPos.x / (2 * this->m_oMap.m_iTileSize)) - (this->m_oMap.m_iWidth * 0.5) + 0.5);
+                        m_vSelectionEnd.x = ((vPos.x / this->m_oMap.getTileSize()) + (vPos.x / (2 * this->m_oMap.getTileSize())) - (this->m_oMap.getWidth() * 0.5) - 0.5);
+                        m_vSelectionEnd.y = ((vPos.y / this->m_oMap.getTileSize()) - (vPos.x / (2 * this->m_oMap.getTileSize())) - (this->m_oMap.getWidth() * 0.5) + 0.5);
 
                         this->m_oMap.clearSelected();
                         
-                        if (this->m_pCurrentTile->m_eTileType == TileType::GRASS) {
+                        if (this->m_pCurrentTile->getTileType() == TileType::GRASS) {
                             this->m_oMap.select(m_vSelectionStart, m_vSelectionEnd, { 
-                                this->m_pCurrentTile->m_eTileType, 
+                                this->m_pCurrentTile->getTileType(), 
                                 TileType::WATER 
                             });
                         } else {
                             this->m_oMap.select(m_vSelectionStart, m_vSelectionEnd, {
-                                this->m_pCurrentTile->m_eTileType,
+                                this->m_pCurrentTile->getTileType(),
                                 TileType::FOREST,
                                 TileType::WATER,
                                 TileType::ROAD,
@@ -98,8 +98,8 @@ namespace NordicArts {
                             });
                         }
 
-                        this->m_mGUISystem.at("selectionCostText").setEntryText(0, "$" + std::to_string(this->m_pCurrentTile->m_iCost * this->m_oCity.m_oMap.m_iNumSelected));
-                        if (this->m_oCity.m_dFunds <= (this->m_oCity.m_oMap.m_iNumSelected * this->m_pCurrentTile->m_iCost)) {
+                        this->m_mGUISystem.at("selectionCostText").setEntryText(0, "$" + std::to_string(this->m_pCurrentTile->m_iCost * this->m_oCity.m_oMap.getNumSelected()));
+                        if (this->m_oCity.m_dFunds <= (this->m_oCity.m_oMap.getNumSelected() * this->m_pCurrentTile->m_iCost)) {
                             this->m_mGUISystem.at("selectionCostText").highlight(0);
                         } else {
                             this->m_mGUISystem.at("selectionCostText").highlight(-1);
@@ -136,8 +136,8 @@ namespace NordicArts {
                                 this->m_eActionState = ActionState::SELECTING;
     
                                 sf::Vector2f vPos = this->m_pGame->m_oWindow.mapPixelToCoords(sf::Mouse::getPosition(this->m_pGame->m_oWindow), this->m_oGameView);
-                                m_vSelectionStart.x = ((vPos.x / this->m_oMap.m_iTileSize) + (vPos.x / (2 * this->m_oMap.m_iTileSize)) - (this->m_oMap.m_iWidth * 0.5) - 0.5);
-                                m_vSelectionStart.y = ((vPos.y / this->m_oMap.m_iTileSize) - (vPos.x / (2 * this->m_oMap.m_iTileSize)) - (this->m_oMap.m_iWidth * 0.5) + 0.5);
+                                m_vSelectionStart.x = ((vPos.x / this->m_oMap.getTileSize()) + (vPos.x / (2 * this->m_oMap.getTileSize())) - (this->m_oMap.getWidth() * 0.5) - 0.5);
+                                m_vSelectionStart.y = ((vPos.y / this->m_oMap.getTileSize()) - (vPos.x / (2 * this->m_oMap.getTileSize())) - (this->m_oMap.getWidth() * 0.5) + 0.5);
                             }
                         }
                     } else if (oEvent.mouseButton.button == sf::Mouse::Right) {
@@ -171,10 +171,10 @@ namespace NordicArts {
                     } else if (oEvent.mouseButton.button == sf::Mouse::Left) {
                         if (this->m_eActionState == ActionState::SELECTING) {
                             if (this->m_pCurrentTile != nullptr) {
-                                unsigned int iCost = (this->m_pCurrentTile->m_iCost * this->m_oCity.m_oMap.m_iNumSelected);
+                                unsigned int iCost = (this->m_pCurrentTile->m_iCost * this->m_oCity.m_oMap.getNumSelected());
                                 if (this->m_oCity.m_dFunds >= iCost) {
                                     this->m_oCity.bulldoze(*this->m_pCurrentTile);
-                                    this->m_oCity.m_dFunds -= (this->m_pCurrentTile->m_iCost * this->m_oCity.m_oMap.m_iNumSelected);
+                                    this->m_oCity.m_dFunds -= (this->m_pCurrentTile->m_iCost * this->m_oCity.m_oMap.getNumSelected());
                                     this->m_oCity.tileChanged();
                                 }
                             }
@@ -248,8 +248,8 @@ namespace NordicArts {
 
         this->m_fZoomLevel = 1.0f;
 
-        sf::Vector2f vCenter(this->m_oMap.m_iWidth, (this->m_oMap.m_iHeight * 0.5));
-        vCenter *= float(this->m_oMap.m_iTileSize);
+        sf::Vector2f vCenter(this->m_oMap.getWidth(), (this->m_oMap.getHeight() * 0.5));
+        vCenter *= float(this->m_oMap.getTileSize());
         m_oGameView.setCenter(vCenter);
 
         this->m_vSelectionStart = sf::Vector2i(0, 0);

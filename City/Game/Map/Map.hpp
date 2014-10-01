@@ -13,10 +13,6 @@ namespace NordicArts {
     class Map {
     // Variables   
     public:
-        unsigned int        m_iWidth;
-        unsigned int        m_iHeight;
-        unsigned int        m_iTileSize;
-        unsigned int        m_iNumSelected;
         unsigned int        m_iNumRegions[1];
 
         std::vector<int>    m_vResources;
@@ -25,6 +21,10 @@ namespace NordicArts {
 
     protected:
     private:
+        unsigned int        m_iTileSize;
+        unsigned int        m_iNumSelected;
+        unsigned int        m_iWidth;
+        unsigned int        m_iHeight;
 
     // Methods
     public:
@@ -38,6 +38,13 @@ namespace NordicArts {
         void updateDirection(TileType eTileType);
         void select(sf::Vector2i vStart, sf::Vector2i vEnd, std::vector<TileType> vList);
         void clearSelected();
+
+        unsigned int getTileSize() const;
+        void setTileSize(unsigned int iSize);
+
+        unsigned int getNumSelected() const;
+        unsigned int getWidth() const;
+        unsigned int getHeight() const;
 
     protected:
     private:
