@@ -2,6 +2,7 @@
 
 #include <GameState.hpp>
 #include <GameState/Editor.hpp>
+#include <Map/Map.hpp>
 
 namespace NordicArts {
     void GameStateEditor::draw(const float fDT) {
@@ -11,12 +12,25 @@ namespace NordicArts {
         this->m_pGame->m_oWindow.draw(this->m_pGame->m_oBackground);
 
         this->m_pGame->m_oWindow.setView(this->m_oGameView);
-        this->m_oMap.draw(this->m_pGame->m_oWindow, fDT);
+        this->m_oCity.m_oMap.draw(this->m_pGame->m_oWindow, fDT);
+
+        this->m_pGame->m_oWindow.setView(this->m_oGUIView);
+        for (auto oGUI : this->m_mGUISystem) {
+            this->m_pGame->m_oWindow.draw(oGUI.second);
+        }
 
         return;
     }
 
     void GameStateEditor::update(const float fDT) {
+        this->m_oCity.update();
+
+        this->m_mGUISystem.at("infobar").setTextEntry(0, ("Day" + std::to_string(this->m_oCity.m_iDay)));
+        this->m_mGUISystem.at("infobar").setTextEntry(1, ("$" + std::to_string(this->m_oCity.m_dFunds)));
+        this->m_mGUISystem.at("infobar").setTextEntry(2, (std::to_string(this->m_oCity.m_dPopulation) + "(" + std::to_string(this->m_oCity.getHomeless()) + ")"));
+        this->m_mGUISystem.at("infobar").setTextEntry(3, (std::to_string(this->m_oCity.m_dEmployable) + "(" + std::to_string(this->m_oCity.getUnemployed()) + ")"));
+        this->m_mGUISystem.at("infobar").setTextEntry(4, tileTypeToString(m_pCurrentTile.m_eTileType));
+
         return;
     }
 

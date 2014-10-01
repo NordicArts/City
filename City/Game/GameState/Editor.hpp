@@ -2,10 +2,15 @@
 #define NordicArts_City_Game_GameState_Editor_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+
+#inclue <string>
+#include <map>
 
 #include <GameState.hpp>
 #include <Map/Map.hpp>
-#include <Tile/Tile.hpp>
+#include <City/City.hpp>
+#include <GUI.hpp>
 
 namespace NordicArts {
     enum class ActionState {
@@ -19,20 +24,24 @@ namespace NordicArts {
     public:
     protected:
     private:
-        sf::Vector2i    m_vPanningAnchor;
-        sf::Vector2i    m_vSelectionStart;
-        sf::Vector2i    m_vSelectionEnd;
+        sf::Vector2i                m_vPanningAnchor;
+        sf::Vector2i                m_vSelectionStart;
+        sf::Vector2i                m_vSelectionEnd;
 
-        sf::View        m_oGameView;
-        sf::View        m_oGUIView;
+        sf::View                    m_oGameView;
+        sf::View                    m_oGUIView;
 
-        ActionState     m_eActionState;
+        ActionState                 m_eActionState;
 
-        Map             m_oMap;
+        Map                         m_oMap;
 
-        float           m_fZoomLevel;
+        City                        m_oCity;
 
-        Tile            *m_pCurrentTile;
+        float                       m_fZoomLevel;
+
+        Tile                       *m_pCurrentTile;
+
+        std::map<std::string, GUI>  m_mGUISystem;
 
     // Methods
     public:
