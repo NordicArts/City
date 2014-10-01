@@ -48,6 +48,10 @@ namespace NordicArts {
 
         return;
     }
+
+    std::string Tile::getCost() const {
+        return std::to_string(this->m_iCost);
+    }
     
     std::string tileTypeToString(TileType eType) {
         switch (eType) {

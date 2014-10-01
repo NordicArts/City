@@ -189,7 +189,7 @@ namespace NordicArts {
                     break;
                 }
 
-                case sf::Event::MouseWheelMoved: 
+                case sf::Event::MouseWheelMoved: {
                     if (oEvent.mouseWheel.delta < 0) {
                         m_oGameView.zoom(2.0f);
 
