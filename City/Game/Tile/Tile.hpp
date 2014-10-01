@@ -19,7 +19,7 @@ namespace NordicArts {
         ROAD
     };
 
-    std::string titeTypeToString(TileType eType);
+    std::string tileTypeToString(TileType eType);
 
     class Tile {
     // Variables

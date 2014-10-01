@@ -178,4 +178,122 @@ namespace NordicArts {
 
         return;
     }
+
+    void City::update(float fDT) {
+        double dPopTotal            = 0;
+        double dCommericalRevenue   = 0;
+        double dIndustrialRevenue   = 0;
+
+        this->m_fCurrentTime += fDT;
+        if (this->m_fCurrentTil < this->m_fTimePerDay) {
+            return;
+        }
+        ++m_iDay;
+        this->m_fCurrentTime = 0.0;
+        
+        if ((m_iDay % 30) == 0) {
+            this->m_dFunds += this->m_dEarnings;
+
+            this->m_dEarnings = 0;
+        }
+
+        for (int i = 0; i < this->m_oMap.m_vTiles.size(); ++i) {
+            Tile &oTile = this->m_oMap.m_vTiles[this->m_iShuffledTiles[i]];
+            if (oTile.m_eTileType == TileType::RESIDENTIAL) {
+                this->distributePool(this->m_dPopulationPool, oTile, (this->m_dBirthRate - m_dDeathRate));
+
+                dPopTotal += oTile.m_dPopulation;
+            } else if (oTile.m_eTileType == TileType::COMMERICAL) {
+               if ((rand() % 100) <  (15 * (1.0 - this->m_dCommericalTax))) {
+                this->distributePool(this->m_dEmploymentPool, oTile, 0.00);
+            } else if (oTile.m_eTileType == TileType::INDUSTRIAL) {
+                if ((this->m_oMap.m_vResources[i] > 0) && ((rand() % 100) < this->m_dPopulation)) {
+                    ++oTile.m_fProduction;
+
+                    --this->m_oMap.m_vResources[i];
+                }
+
+                if ((rand() % 100) < (15 * (1.0 - this->m_dIndustrialTax))) {
+                    this->distrubutePool(this->m_dEmploymentPool, oTile, 0.0);
+                }
+            }
+
+            oTile.update();
+        }
+
+        for (int i = 0; i < this-m_oMap.m_vTiles.size(); ++i) {
+            Tile &oTile = this->m_oMap.m_vTiles[this->m_iShuffledTiles[i]];
+            if (oTile.m_eTileType == TileType::INDUSTRIAL) {
+                int iReceivedResources = 0;
+                for (auto &oTiles : this->m_oMap.m_vTiles) {
+                    if ((oTiles.m_iRegions[0] == oTile.m_iRegions[0]) && (oTiles.m_eTileType == TileType::INDUSTRIAL)) {
+                        if (oTiles.m_fProduction > 0) {
+                            ++iRecievedResources;
+                
+                            --oTiles.m_fProduction;
+                        }
+
+                        if (iRecievedResources >= (oTile.m_iTileVariant + 1)) {
+                            break;
+                        }
+                    }
+                }
+
+                oTile.m_fStoredGoods += ((iRecievedResources + oTiole.m_fProduction) * (oTile.m_iTileVariant + 1));
+            }
+        }
+
+        for (int i = 0; i < this->m_oMap.m_vTiles.size(); ++i) {
+            Tile &oTile = this->m_oMap.m_vTiles[this->m_iShuffledTiles[i]];
+            if (oTile.m_iTileType == TileType::COMMERICAL) {
+                int iRecievedGoods = 0;
+                double dMaxCustomers = 0.0;
+                
+                for (auto &oTiles : this->m_oMap.m_vTiles) {
+                    if ((oTiles.m_iRegions[0] == oTile.m_iRegions[0]) && (oTiles.m_iTileType == TileType::INDUSTRIAL) && (oTiles.m_fStoredGoods > 0)) {
+                        while ((oTiles.m_fStoredGoods > 0) && (iRecievedGoods != (oTile.m_iTileVariant + 1))) {
+                            --oTiles.m_fStoredGoods;
+                        
+                            ++iRecievedGoods;
+        
+                            dIndustrialRevenue += (100 * (1.0 - m_dIndustrialTax));
+                        }
+                    } else if ((oTiles.m_iRegions[0] == oTile.m_iRegions[0]) && (oTiles.m_iTileType == TileType::RESIDENTIAL)) {
+                        dMaxCustomers += oTiles.m_dPopulation;
+                    }
+
+                    if (iRecievedGoods == (oTile.m_iTileVariant + 1)) {
+                        break;
+                    }
+                }
+
+                oTile.m_fProduction = (((iRecievedGoods * dMaxCustomers) + (rand() % 20)) * (1.0 - this->m_dCommercialTax));
+
+                double dRevenue = ((oTile.m_fProduction * dMaxCustomers * oTile.m_dPopulation) / 100.0);
+                m_dCommercialRevenue += dRevenue;
+            }
+        }
+
+        this->m_dPopulationPool += (this->m_dPopulationPool * (this->m_dBirthRate - this->m_dDeathRate));
+        dPopTotal += this->m_dPopulationPool;
+
+        float fNewWorkers = ((dPopTotal - this->m_dPopulationPool) * this->m_fPropCanWork);
+        fNewWorkers *= ((fNewWorkers < 0) ? -1 : 1);
+        this->m_dEmploymentPool += fNewWorkers;
+        this->m_dEmployable += fNewWorkers;
+        if (this->m_dEmploymentPool < 0) { 
+            this->m_dEmploymentPool = 0;
+        }
+        if (this->m_dEmployable < 0) {
+            this->m_dEmployable = 0;
+        }
+
+        this->m_dPopulation = dPopTotal;
+
+        this->m_dEarnings = ((this->m_dPopulation - this->m_dPopulationPool) * 15 * this->m_dResidentialTax);
+        this->m_dEarnings += (dCommericalRevenue * this->m_dCommercialTax);
+        this->m_dEarnings += (dIndustrialRevenue * this->m_dIndustrialTax);
+
+        return;
+    }
 };

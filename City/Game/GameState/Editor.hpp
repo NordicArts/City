@@ -4,8 +4,9 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-#inclue <string>
+#include <string>
 #include <map>
+#include <utility>
 
 #include <GameState.hpp>
 #include <Map/Map.hpp>

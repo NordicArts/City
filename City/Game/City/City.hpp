@@ -50,7 +50,6 @@ namespace NordicArts {
         void bulldoze(const Tile &oTile);
         void shuffleTiles();
         void tileChanged();
-        void update(float fDT);
 
         double getHomeless() const;
         double getUnemployed() const;

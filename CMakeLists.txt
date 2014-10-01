@@ -57,10 +57,10 @@ list(APPEND GameSources ${Engine}/Texture/Manager.cpp)
 list(APPEND GameHeaders ${Engine}/Texture/Manager.hpp)
 
 # Tile
-link_directories(${Engine}/Tile)
-include_directories(${Engine}/Tile)
-list(APPEND GameSources ${Engine}/Tile/Tile.cpp)
-list(APPEND GameHeaders ${Engine}/Tile/Tile.hpp)
+link_directories(${Game}/Tile)
+include_directories(${Game}/Tile)
+list(APPEND GameSources ${Game}/Tile/Tile.cpp)
+list(APPEND GameHeaders ${Game}/Tile/Tile.hpp)
 
 # GUI
 link_directories(${Engine}/GUI)
